@@ -34,14 +34,22 @@
     <body>
         <div class="outer-div">
         <div class="inner-div">
-                <div style="text-align:center;"><h1>{{ title }}</h1></div>
-                <table class="routes">
+            <div style="text-align:center;"><h1>{{ title }}</h1></div>
+            <table class="routes">
                 <tr><th>Route</th><th>Description</th></tr>
                 <tr><td><a href="//status?code=503">/status?code=:http_status:</a></td><td>Return status code</td></tr>
                 <tr><td><a href="/ping">/ping</a></td><td></td></tr>
-                <tr><td><a href="/wait">/wait</a></td><td></td></tr>
+                <tr><td><a href="/wait?time=100">/wait?time=100</a></td><td></td></tr>
                 <tr><td><a href="/oom">/oom</a></td><td></td></tr>
             </table>
+            <p></p>
+            <table class="routes">
+                <tr><th>Key</th><th>Value</th></tr>
+                {{#request_values}}
+                <tr><td>{{request_key}}</td><td>{{request_value}}</td></tr>
+                {{/request_values}}                
+                
+            </table>            
             <p class="footer">Lighthouse (c) 2019</p>
         </div>
     </div>
