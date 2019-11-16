@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>{{ title }}</title>
+        <style>
+            body {
+                background-color: antiquewhite;
+                font-family: monospace;
+            }
+            .outer-div {
+                position: absolute;
+                width: 100%;
+            }
+            .inner-div {
+                margin: 0 auto;
+                width: 50%;
+                background-color: #ccc;
+            }        
+        </style>
+        <style class="routes">
+            table {
+                background-color:bisque; 
+                font-size: 12px;
+                text-align: left;
+                width: 100%;}
+        </style>
+        <style class="footer">
+                p {
+                    font-size: 8px;
+                    text-align: center;
+                }
+        </style>
+    </head>
+    <body>
+        <div class="outer-div">
+        <div class="inner-div">
+                <div style="text-align:center;"><h1>{{ title }}</h1></div>
+                <table class="routes">
+                <tr><th>Route</th><th>Description</th></tr>
+                <tr><td><a href="//status?code=503">/status?code=:http_status:</a></td><td>Return status code</td></tr>
+                <tr><td><a href="/ping">/ping</a></td><td></td></tr>
+                <tr><td><a href="/wait">/wait</a></td><td></td></tr>
+                <tr><td><a href="/oom">/oom</a></td><td></td></tr>
+            </table>
+            <p class="footer">Lighthouse (c) 2019</p>
+        </div>
+    </div>
+    </body>
+</html>
