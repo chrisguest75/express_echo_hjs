@@ -1,8 +1,7 @@
 var express = require('express');
 var router = express.Router();
 
-/* GET home page. */
-router.get('/', function(req, res, next) {
+function process_req(req) {
   request_values = [
     {request_key:"path", request_value:req.path}, 
     {request_key:"protocol", request_value:req.protocol}, 
@@ -12,10 +11,18 @@ router.get('/', function(req, res, next) {
     {request_key:"host", request_value:req.host},
     {request_key:"ip", request_value:req.ip}
   ]
-
+  
   Object.keys(req.headers).forEach(function(key) {
-    request_values.push({ request_key:key, request_value:req.headers[key]});
+    request_values.push({ request_key:"header." + key, request_value:req.headers[key]});
   });  
+  
+  return request_values;
+}
+
+/* GET home page. */
+router.get('/', function(req, res, next) {
+  request_values = process_req(req)
+
   res.render('index', { title: 'Express', request_values: request_values  });
 });
 
