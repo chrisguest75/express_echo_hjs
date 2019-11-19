@@ -21,3 +21,32 @@ nodemon
 ```
 
 ## Tests 
+
+
+
+
+## Debug
+
+```
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Launch via NPM",
+            "runtimeExecutable": "npm",
+            "runtimeArgs": [
+                "run-script",
+                "debug"
+            ],
+            "port": 9229,
+            "skipFiles": [
+                "<node_internals>/**"
+            ]
+        },
+
+```
+
+# Docker
+
+```
+docker build -t express-echo .
+```

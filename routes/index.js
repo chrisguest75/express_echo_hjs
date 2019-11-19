@@ -23,7 +23,7 @@ function process_req(req) {
 router.get('/', function(req, res, next) {
   request_values = process_req(req)
 
-  res.render('index', { title: 'Express', request_values: request_values  });
+  res.render('index', { title: 'Echo', request_values: request_values  });
 });
 
 router.get('/ping', function(req, res, next) {
