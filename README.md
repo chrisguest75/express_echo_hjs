@@ -26,7 +26,7 @@ nodemon
 
 
 ## Debug
-
+To debug in VSCode please add the following to the launch.json
 ```
         {
             "type": "node",
