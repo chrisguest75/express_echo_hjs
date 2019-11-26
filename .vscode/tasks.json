@@ -13,6 +13,28 @@
             "type": "shell",
             "group": "build",
             "command": "gcloud builds submit --project open-source-01 --substitutions=COMMIT_SHA=test,BRANCH_NAME=local,REPO_NAME=express_echo_hjs"
-        }        
+        },
+        {
+            "label": "local build docker",
+            "type": "shell",
+            "group": "build",
+            "command": "docker build -t express-echo ."
+        },
+        {
+            "label": "local build and deploy docker",
+            "dependsOn": "local build docker",
+            "type": "shell",
+            "group": "build",
+            "command": "docker run -p 3000:3000 -it --rm express-echo"
+        }
+        
+        /*,
+        Don't need this as it is built in.
+        #{
+            "label": "run npm",
+            "type": "shell",
+            "group": "build",
+            "command": "npm start"
+        },*/
     ]
 }
