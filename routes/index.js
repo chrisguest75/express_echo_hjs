@@ -9,7 +9,8 @@ function process_req(req) {
     {request_key:"httpVersion", request_value:req.httpVersion},
     {request_key:"hostname", request_value:req.hostname},
     {request_key:"host", request_value:req.host},
-    {request_key:"ip", request_value:req.ip}
+    {request_key:"ip", request_value:req.ip},
+    {request_key:"body", request_value:JSON.stringify(req.body)}
   ]
   
   Object.keys(req.headers).forEach(function(key) {
@@ -26,24 +27,121 @@ function process_req(req) {
 /* GET home page. */
 router.get('/', function(req, res, next) {
   request_values = process_req(req)
-
-  res.render('index', { title: 'Echo', request_values: request_values  });
+  if (req.headers["accept"] == "application/json") {
+    res.setHeader("Content-Type", "application/json");
+    res.json(request_values)  
+  }
+  else {
+    res.setHeader("Content-Type", "text/html");
+    res.render('index', { title: 'Echo', request_values: request_values  });
+  }  
 });
 
 router.post('/', function(req, res, next) {
   request_values = process_req(req)
-
-  res.render('index', { title: 'Echo', request_values: request_values  });
+  
+  if (req.headers["accept"] == "application/json") {
+    res.setHeader("Content-Type", "application/json");
+    res.json(request_values)  
+  }
+  else {
+    res.setHeader("Content-Type", "text/html");
+    res.render('index', { title: 'Echo', request_values: request_values  });
+  }  
 });
 
 router.get('/ping', function(req, res, next) {
   res.statusCode = 200
-  res.send("pong")
+  if (req.headers["accept"] == "application/json") {
+    res.setHeader("Content-Type", "application/json");
+    res.json({ message: 'pong' })  
+  }
+  else {
+    res.send('Unknown accept ' + req.headers["accept"])        
+  }
 });
 
-router.get('/wait', function(req, res, next) {
+router.post('/ping', function(req, res, next) {
+  res.statusCode = 200
+  if (req.headers["accept"] == "application/json") {
+    res.setHeader("Content-Type", "application/json");
+    res.json({ message: 'pong' })  
+  }
+  else {
+    res.send('Unknown accept ' + req.headers["accept"])        
+  }
+});
+
+function sleep(ms){
+  return new Promise(resolve=>{
+      setTimeout(resolve,ms)
+  })
+}
+
+router.get('/wait', async function(req, res, next) {
   request_values = process_req(req)
-  res.render('index', { title: 'Wait', request_values: request_values  });
+  if (req.query.wait != undefined) {  
+    await sleep(Number(req.query.wait) * 1000)
+  }
+  if (req.headers["accept"] == "application/json") {
+    res.setHeader("Content-Type", "application/json");
+    res.json(request_values)  
+  }
+  else {
+    res.render('index', { title: 'Wait', request_values: request_values  });
+    //res.send('Unknown accept ' + req.headers["accept"])        
+  }  
+});
+
+router.post('/wait', async function(req, res, next) {
+  request_values = process_req(req)
+  if (req.query.wait != undefined) {  
+    await sleep(Number(req.query.wait) * 1000)
+  }
+  if (req.headers["accept"] == "application/json") {
+    res.setHeader("Content-Type", "application/json");
+    res.json(request_values)  
+  }
+  else {
+    res.render('index', { title: 'Wait', request_values: request_values  });
+    //res.send('Unknown accept ' + req.headers["accept"])        
+  }  
+});
+
+router.get('/error', function(req, res, next) {
+  request_values = process_req(req)
+  if (req.query.error != undefined) {
+    res.statusCode = Number(req.query.error)
+  }
+  else {
+    res.statusCode = 200
+  }
+  if (req.headers["accept"] == "application/json") {
+    res.setHeader("Content-Type", "application/json");
+    res.json(request_values)  
+  }
+  else {
+    res.render('index', { title: 'Error', request_values: request_values  });
+    //res.send('Unknown accept ' + req.headers["accept"])        
+  }  
+});
+
+router.post('/error', function(req, res, next) {
+  request_values = process_req(req)
+  if (req.query.error != undefined) {
+    res.statusCode = Number(req.query.error)
+  }
+  else {
+    res.statusCode = 200
+  }
+  if (req.headers["accept"] == "application/json") {
+    res.setHeader("Content-Type", "application/json");
+    res.json(request_values)  
+  }
+  else {
+    res.render('index', { title: 'Error', request_values: request_values  });
+    //res.send('Unknown accept ' + req.headers["accept"])        
+  }  
 });
 
 module.exports = router;

@@ -3,7 +3,6 @@
 ## TODO
 A list of TODOs
 - Add some unittests
-- Dockerise it
 - Improve the design
 - Add a wait loop
 - Content types - application/json text/html..
@@ -25,7 +24,8 @@ nodemon
 
 
 
-## Debug
+## VSCode
+### Debug
 To debug in VSCode please add the following to the launch.json
 ```
         {
@@ -44,6 +44,8 @@ To debug in VSCode please add the following to the launch.json
         },
 
 ```
+### Tasks
+
 
 # Docker
 
