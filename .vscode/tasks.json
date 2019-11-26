@@ -26,6 +26,12 @@
             "type": "shell",
             "group": "build",
             "command": "docker run -p 3000:3000 -it --rm express-echo"
+        },
+        {
+            "label": "nodemon",
+            "type": "shell",
+            "group": "build",
+            "command": "nodemon start"
         }
         
         /*,

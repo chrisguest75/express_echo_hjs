@@ -15,6 +15,10 @@ function process_req(req) {
   Object.keys(req.headers).forEach(function(key) {
     request_values.push({ request_key:"header." + key, request_value:req.headers[key]});
   });  
+
+  Object.keys(req.query).forEach(function(key) {
+    request_values.push({ request_key:"param." + key, request_value:req.query[key]});
+  });  
   
   return request_values;
 }
@@ -26,15 +30,20 @@ router.get('/', function(req, res, next) {
   res.render('index', { title: 'Echo', request_values: request_values  });
 });
 
+router.post('/', function(req, res, next) {
+  request_values = process_req(req)
+
+  res.render('index', { title: 'Echo', request_values: request_values  });
+});
+
 router.get('/ping', function(req, res, next) {
   res.statusCode = 200
   res.send("pong")
 });
 
 router.get('/wait', function(req, res, next) {
-  console.log(req.query.time);
-  res.statusCode = 200
-  res.send("pong")
+  request_values = process_req(req)
+  res.render('index', { title: 'Wait', request_values: request_values  });
 });
 
 module.exports = router;
