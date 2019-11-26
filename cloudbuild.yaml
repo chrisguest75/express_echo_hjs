@@ -1,0 +1,30 @@
+substitutions:
+  _IMAGE_NAME: "express_echo_hjs" 
+
+timeout: "1200.0s"
+# Build the dockerfile.
+#_IMAGE_NAME: "express_echo_hjs_$BRANCH_NAME" 
+# TODO: Check if master and tag without branch name as well
+steps:
+- name: 'gcr.io/cloud-builders/docker'
+  entrypoint: /bin/bash
+  args:
+  - '-c'
+  - |
+    pwd
+    ls -la
+    docker build --cache-from=gcr.io/$PROJECT_ID/$REPO_NAME/${_IMAGE_NAME}_${BRANCH_NAME}:$COMMIT_SHA -t gcr.io/$PROJECT_ID/$REPO_NAME/${_IMAGE_NAME}_${BRANCH_NAME}:$COMMIT_SHA .
+    docker tag gcr.io/$PROJECT_ID/$REPO_NAME/${_IMAGE_NAME}_${BRANCH_NAME}:$COMMIT_SHA gcr.io/$PROJECT_ID/$REPO_NAME/${_IMAGE_NAME}_${BRANCH_NAME}:latest
+    docker push gcr.io/$PROJECT_ID/$REPO_NAME/${_IMAGE_NAME}_${BRANCH_NAME}:$COMMIT_SHA 
+    docker push gcr.io/$PROJECT_ID/$REPO_NAME/${_IMAGE_NAME}_${BRANCH_NAME}:latest
+
+- name: 'gcr.io/cloud-builders/gcloud'
+  entrypoint: /bin/bash
+  args:  
+  - '-c'
+  - | 
+    gcloud beta run deploy echo --image gcr.io/$PROJECT_ID/$REPO_NAME/${_IMAGE_NAME}_${BRANCH_NAME}:$COMMIT_SHA --region europe-west1 --platform managed --quiet --allow-unauthenticated 
+
+# These are images that pushed as well
+images: ['gcr.io/$PROJECT_ID/$REPO_NAME/${_IMAGE_NAME}_${BRANCH_NAME}:$COMMIT_SHA',
+        'gcr.io/$PROJECT_ID/$REPO_NAME/${_IMAGE_NAME}_${BRANCH_NAME}:latest']
