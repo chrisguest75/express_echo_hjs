@@ -5,7 +5,6 @@ A list of TODOs
 - Add some unittests
 - Fix HTML
 - Improve the design
-- Verbs - GET, POST, DELETE, UPDATE.
 
 
 ## Build

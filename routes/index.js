@@ -12,13 +12,17 @@ function process_req(req) {
     {request_key:"ip", request_value:req.ip},
     {request_key:"body", request_value:JSON.stringify(req.body)}
   ]
-  
+
+  Object.keys(req.query).forEach(function(key) {
+    request_values.push({ request_key:"param." + key, request_value:req.query[key]});
+  });  
+
   Object.keys(req.headers).forEach(function(key) {
     request_values.push({ request_key:"header." + key, request_value:req.headers[key]});
   });  
 
-  Object.keys(req.query).forEach(function(key) {
-    request_values.push({ request_key:"param." + key, request_value:req.query[key]});
+  Object.keys(process.env).forEach(function(key) {
+    request_values.push({ request_key:"env." + key, request_value:process.env[key]});
   });  
   
   return request_values;
