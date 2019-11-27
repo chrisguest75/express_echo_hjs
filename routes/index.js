@@ -24,91 +24,71 @@ function process_req(req) {
   return request_values;
 }
 
-/* GET home page. */
-router.get('/', function(req, res, next) {
-  request_values = process_req(req)
-  if (req.headers["accept"] == "application/json") {
-    res.setHeader("Content-Type", "application/json");
-    res.json(request_values)  
-  }
-  else {
-    res.setHeader("Content-Type", "text/html");
-    res.render('index', { title: 'Echo', request_values: request_values  });
-  }  
-});
-
-router.post('/', function(req, res, next) {
-  request_values = process_req(req)
-  
-  if (req.headers["accept"] == "application/json") {
-    res.setHeader("Content-Type", "application/json");
-    res.json(request_values)  
-  }
-  else {
-    res.setHeader("Content-Type", "text/html");
-    res.render('index', { title: 'Echo', request_values: request_values  });
-  }  
-});
-
-router.get('/ping', function(req, res, next) {
-  res.statusCode = 200
-  if (req.headers["accept"] == "application/json") {
-    res.setHeader("Content-Type", "application/json");
-    res.json({ message: 'pong' })  
-  }
-  else {
-    res.send('Unknown accept ' + req.headers["accept"])        
-  }
-});
-
-router.post('/ping', function(req, res, next) {
-  res.statusCode = 200
-  if (req.headers["accept"] == "application/json") {
-    res.setHeader("Content-Type", "application/json");
-    res.json({ message: 'pong' })  
-  }
-  else {
-    res.send('Unknown accept ' + req.headers["accept"])        
-  }
-});
-
 function sleep(ms){
   return new Promise(resolve=>{
       setTimeout(resolve,ms)
   })
 }
 
-router.get('/wait', async function(req, res, next) {
+function handleEcho(req, res, next) {
+  request_values = process_req(req)
+  accept = req.headers["accept"].split(",")
+  found = false
+  for (accepttype in accept) { 
+    if (accept[accepttype] == "application/json") {
+      res.setHeader("Content-Type", "application/json");
+      res.json(request_values)  
+      found = true
+      break
+    }
+  }
+  if (found == false) {
+    res.setHeader("Content-Type", "text/html");
+    res.render('index', { title: 'Echo', request_values: request_values  });
+  }    
+
+}
+
+function handlePing(req, res, next) {
+  res.statusCode = 200
+  accept = req.headers["accept"].split(",")
+  found = false
+  for (accepttype in accept) { 
+    if (accept[accepttype] == "application/json") {
+      res.setHeader("Content-Type", "application/json");
+      res.json({ message: 'pong' })  
+      found = true
+      break
+    }
+  }
+  if (found == false) {
+    res.setHeader("Content-Type", "text/html");
+    res.send("pong")        
+  }    
+}
+
+async function handleWait(req, res, next) {
   request_values = process_req(req)
   if (req.query.wait != undefined) {  
     await sleep(Number(req.query.wait) * 1000)
   }
-  if (req.headers["accept"] == "application/json") {
-    res.setHeader("Content-Type", "application/json");
-    res.json(request_values)  
+  accept = req.headers["accept"].split(",")
+  found = false
+  for (accepttype in accept) { 
+    if (accept[accepttype] == "application/json") {
+      res.setHeader("Content-Type", "application/json");
+      res.json(request_values)  
+      found = true
+      break
+    }
   }
-  else {
+  if (found == false) {
+    res.setHeader("Content-Type", "text/html");
     res.render('index', { title: 'Wait', request_values: request_values  });
-    //res.send('Unknown accept ' + req.headers["accept"])        
-  }  
-});
+  }    
+}
 
-router.post('/wait', async function(req, res, next) {
-  request_values = process_req(req)
-  if (req.query.wait != undefined) {  
-    await sleep(Number(req.query.wait) * 1000)
-  }
-  if (req.headers["accept"] == "application/json") {
-    res.setHeader("Content-Type", "application/json");
-    res.json(request_values)  
-  }
-  else {
-    res.render('index', { title: 'Wait', request_values: request_values  });
-    //res.send('Unknown accept ' + req.headers["accept"])        
-  }  
-});
-
-router.get('/error', function(req, res, next) {
+function handleError(req, res, next) {
   request_values = process_req(req)
   if (req.query.error != undefined) {
     res.statusCode = Number(req.query.error)
@@ -116,32 +96,45 @@ router.get('/error', function(req, res, next) {
   else {
     res.statusCode = 200
   }
-  if (req.headers["accept"] == "application/json") {
-    res.setHeader("Content-Type", "application/json");
-    res.json(request_values)  
+  accept = req.headers["accept"].split(",")
+  found = false
+  for (accepttype in accept) { 
+    if (accept[accepttype] == "application/json") {
+      res.setHeader("Content-Type", "application/json");
+      res.json(request_values)  
+      found = true
+      break
+    }
   }
-  else {
+  if (found == false) {
+    res.setHeader("Content-Type", "text/html");
     res.render('index', { title: 'Error', request_values: request_values  });
-    //res.send('Unknown accept ' + req.headers["accept"])        
-  }  
-});
+  }    
+}
 
-router.post('/error', function(req, res, next) {
-  request_values = process_req(req)
-  if (req.query.error != undefined) {
-    res.statusCode = Number(req.query.error)
-  }
-  else {
-    res.statusCode = 200
-  }
-  if (req.headers["accept"] == "application/json") {
-    res.setHeader("Content-Type", "application/json");
-    res.json(request_values)  
-  }
-  else {
-    res.render('index', { title: 'Error', request_values: request_values  });
-    //res.send('Unknown accept ' + req.headers["accept"])        
-  }  
-});
+/* GET home page. */
+router.get('/', handleEcho);
+router.post('/', handleEcho);
+router.delete('/', handleEcho);
+router.patch('/', handleEcho);
+router.put('/', handleEcho);
+
+router.get('/ping', handlePing);
+router.post('/ping', handlePing);
+router.delete('/ping', handlePing);
+router.patch('/ping', handlePing);
+router.put('/ping', handlePing);
+
+router.get('/wait', handleWait);
+router.post('/wait', handleWait);
+router.delete('/wait', handleWait);
+router.patch('/wait', handleWait);
+router.put('/wait', handleWait);
+
+router.get('/error', handleError);
+router.post('/error', handleError);
+router.delete('/error', handleError);
+router.patch('/error', handleError);
+router.put('/error', handleError);
 
 module.exports = router;
