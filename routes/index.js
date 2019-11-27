@@ -11,6 +11,7 @@ function process_req(req) {
     {request_key:"hostname", request_value:req.hostname},
     {request_key:"host", request_value:req.host},
     {request_key:"ip", request_value:req.ip},
+    {request_key:"startTime", request_value:req._startTime},
     {request_key:"body", request_value:JSON.stringify(req.body)},
     {request_key:"os.platform", request_value:os.platform()},
     {request_key:"os.release", request_value:os.release()}
