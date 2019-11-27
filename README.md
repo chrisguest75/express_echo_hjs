@@ -5,7 +5,8 @@ A list of TODOs
 - Add some unittests
 - Fix HTML
 - Improve the design
-
+- Add an OOM endpoint
+- Is there a better way of handling accept header? 
 
 ## Build
 
@@ -42,16 +43,19 @@ To debug in VSCode please add the following to the launch.json
 
 ```
 ### Tasks
-
+Some tasks have been added for vscode.  
 
 # Docker
+Building a local container and running locally for testing.  
 
 ```
 docker build -t express-echo .
 docker run -p 3000:3000 -it --rm express-echo
+open http://localhost:3000
 ```
 
-# Deploy to Kind
+# Deploy to Kind with Cloud Code
+You'll need to install Kind and the VSCode Cloud Code Extension
 
 Deploy Kind cluster
 ```

@@ -141,4 +141,6 @@ router.delete('/error', handleError);
 router.patch('/error', handleError);
 router.put('/error', handleError);
 
+router.get('/oom', handleEcho);
+
 module.exports = router;
