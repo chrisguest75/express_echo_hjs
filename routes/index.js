@@ -21,10 +21,13 @@ function process_req(req) {
     request_values.push({ request_key:"process." + key, request_value:memUsage[key]});
   });  
 
-  var resourceUsage = process.resourceUsage()
-  Object.keys(resourceUsage).forEach(function(key) {
-    request_values.push({ request_key:"process." + key, request_value:resourceUsage[key]});
-  });  
+  try {
+    var resourceUsage = process.resourceUsage()
+    Object.keys(resourceUsage).forEach(function(key) {
+      request_values.push({ request_key:"process." + key, request_value:resourceUsage[key]});
+    });    
+  } catch(ex) {
+  }
 
   Object.keys(req.query).forEach(function(key) {
     request_values.push({ request_key:"param." + key, request_value:req.query[key]});
@@ -37,7 +40,6 @@ function process_req(req) {
   Object.keys(process.env).forEach(function(key) {
     request_values.push({ request_key:"env." + key, request_value:process.env[key]});
   });  
-
   
   return request_values;
 }
@@ -46,27 +48,6 @@ function sleep(ms){
   return new Promise(resolve=>{
       setTimeout(resolve,ms)
   })
-}
-
-function handleEcho(req, res, next) {
-  request_values = process_req(req)
-  found = false
-  if (req.headers["accept"] != undefined) {  
-    accept = req.headers["accept"].split(",")
-    for (accepttype in accept) { 
-      if (accept[accepttype] == "application/json") {
-        res.setHeader("Content-Type", "application/json");
-        res.json(request_values)  
-        found = true
-        break
-      }
-    }
-  }
-  if (found == false) {
-    res.setHeader("Content-Type", "text/html");
-    res.render('index', { title: 'Echo', request_values: request_values  });
-  }    
-
 }
 
 function handlePing(req, res, next) {
@@ -89,18 +70,20 @@ function handlePing(req, res, next) {
   }    
 }
 
-async function handleWait(req, res, next) {
+function createResponse(req, res, title) {
   request_values = process_req(req)
-  if (req.query.wait != undefined) {  
-    await sleep(Number(req.query.wait) * 1000)
-  }
   found = false
   if (req.headers["accept"] != undefined) {     
     accept = req.headers["accept"].split(",")
     for (accepttype in accept) { 
       if (accept[accepttype] == "application/json") {
         res.setHeader("Content-Type", "application/json");
-        res.json(request_values)  
+        var doc = {}
+        Object.keys(request_values).forEach(function(key) {
+          doc[request_values[key].request_key] = request_values[key].request_value
+        }); 
+
+        res.json(doc)  
         found = true
         break
       }
@@ -108,34 +91,29 @@ async function handleWait(req, res, next) {
   }
   if (found == false) {
     res.setHeader("Content-Type", "text/html");
-    res.render('index', { title: 'Wait', request_values: request_values  });
+    res.render('index', { title: title, request_values: request_values  });
   }    
 }
 
-function handleError(req, res, next) {
+function handleEcho(req, res, next) {
+  createResponse(req, res, 'Echo')
+}
+
+async function handleWait(req, res, next) {
   request_values = process_req(req)
+  if (req.query.wait != undefined) {  
+    await sleep(Number(req.query.wait) * 1000)
+  }
+  createResponse(req, res, 'Wait')  
+}
+
+function handleError(req, res, next) {
   if (req.query.error != undefined) {
     res.statusCode = Number(req.query.error)
-  }
-  else {
+  } else {
     res.statusCode = 200
   }
-  found = false
-  if (req.headers["accept"] != undefined) {   
-    accept = req.headers["accept"].split(",")
-    for (accepttype in accept) { 
-      if (accept[accepttype] == "application/json") {
-        res.setHeader("Content-Type", "application/json");
-        res.json(request_values)  
-        found = true
-        break
-      }
-    }
-  }
-  if (found == false) {
-    res.setHeader("Content-Type", "text/html");
-    res.render('index', { title: 'Error', request_values: request_values  });
-  }    
+  createResponse(req, res, 'Error')  
 }
 
 /* GET home page. */

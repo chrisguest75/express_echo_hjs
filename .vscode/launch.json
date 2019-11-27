@@ -8,6 +8,7 @@
             "type": "node",
             "request": "launch",
             "name": "Launch via NPM",
+            
             "runtimeExecutable": "npm",
             "runtimeArgs": [
                 "run-script",
@@ -26,7 +27,8 @@
                 "<node_internals>/**"
             ],
             "program": "${workspaceFolder}/bin/www"
-        },
+        }
+        /*,
         {
             "type": "node",
             "request": "launch",
@@ -35,7 +37,7 @@
                 "<node_internals>/**"
             ],
             "program": "npm debug"
-        }
+        }*/
 
     ]
 }
