@@ -33,14 +33,5 @@
             "group": "build",
             "command": "nodemon start"
         }
-        
-        /*,
-        Don't need this as it is built in.
-        #{
-            "label": "run npm",
-            "type": "shell",
-            "group": "build",
-            "command": "npm start"
-        },*/
     ]
 }

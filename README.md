@@ -70,3 +70,9 @@ cp ./config.txt ~/.kube/config
 kubectl config get-contexts
 kubectl get pods --all-namespaces
 ```
+
+# CloudBuild integration 
+Create a cloudbuild trigger 
+```
+gcloud beta builds triggers create github --repo-name=express_echo_hjs  --repo-owner=chrisguest75 --branch-pattern=".*" --build-config=cloudbuild.yaml --project open-source-01
+```
