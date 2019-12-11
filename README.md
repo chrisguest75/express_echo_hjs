@@ -3,6 +3,7 @@
 ## TODO
 A list of TODOs
 - Add some unittests
+- Add codecoverage ability.
 - Fix HTML
 - Improve the design
 - Add an OOM endpoint
