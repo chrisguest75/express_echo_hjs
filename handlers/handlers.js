@@ -98,6 +98,7 @@ function createResponse(req, res, title) {
 
 function handleEcho(req, res, next) {
   createResponse(req, res, 'Echo')
+  res.statusCode = 200
 }
 
 async function handleWait(req, res, next) {

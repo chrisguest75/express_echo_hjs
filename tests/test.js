@@ -20,7 +20,7 @@ describe('handlePing()', function () {
 });
 
 describe('handleJsonPing()', function () {
-  it('should handle ping request with successful pong response', function () {
+  it('should handle ping request with successful pong json response when application/json content type requested', function () {
     
     // 1. ARRANGE
     var req = {headers: {"accept":"application/json"}};
@@ -32,6 +32,40 @@ describe('handleJsonPing()', function () {
     // 3. ASSERT
     expect(res.statusCode).to.be.equal(200);
     expect(res.message.message).to.be.equal("pong");
+  });
+});
+
+describe('handleDefaultEcho()', function () {
+  it('should handle echo request with requested http status', function () {
+    
+    // 1. ARRANGE
+    var req = {headers: [], query:{}};
+    var res = {setHeader: function(){},send: function(message){this.message = message}, render: function(template, values){this.template = template; this.value = values}};
+
+    // 2. ACT
+    var out = handlers.handleEcho(req, res);
+
+    // 3. ASSERT
+    expect(res.statusCode).to.be.equal(200);
+    expect(res.template).to.be.equal("index");
+
+  });
+});
+
+describe('handleJsonEcho()', function () {
+  it('should handle echo request with requested http status response when application/json content type requested', function () {
+    
+    // 1. ARRANGE
+    var req = {headers: {"accept":"application/json"}, query:{}, path:"testpath"};    
+    var res = {setHeader: function(){},send: function(message){this.message = message}, json: function(message){this.message = message}};
+
+    // 2. ACT
+    var out = handlers.handleEcho(req, res);
+
+    // 3. ASSERT
+    expect(res.statusCode).to.be.equal(200);
+    expect(res.message["path"]).to.be.equal("testpath");
+
   });
 });
 
