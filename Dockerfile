@@ -1,10 +1,11 @@
-FROM node:12.13-alpine
+FROM node:12.13-alpine as prod
 
 ENV DEBUG=app:*
 
 WORKDIR /app
 COPY ./bin bin
 COPY ./public public
+COPY ./handlers handlers
 COPY ./routes routes
 COPY ./views views
 COPY .env .env
@@ -15,4 +16,12 @@ RUN npm install
 
 CMD ["npm", "start"]
 
+# Add test layers
+FROM node:12.13-alpine as test
+
+WORKDIR /app
+COPY --from=prod /app /app
+COPY ./tests tests
+
+CMD ["npm", "test"]
 

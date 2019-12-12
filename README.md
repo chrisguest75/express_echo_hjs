@@ -20,7 +20,9 @@ nodemon
 
 ## Tests 
 
-
+```
+mocha tests
+```
 
 
 ## VSCode
@@ -48,10 +50,17 @@ Some tasks have been added for vscode.
 
 # Docker
 Building a local container and running locally for testing.  
-
+Run server in docker
 ```
-docker build -t express-echo .
+docker build --target prod -t express-echo .
 docker run -p 3000:3000 -it --rm express-echo
+open http://localhost:3000
+```
+
+Run tests in docker
+```
+docker build --target test -t express-echo-test .
+docker run -it --rm express-echo-test
 open http://localhost:3000
 ```
 
