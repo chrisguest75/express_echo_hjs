@@ -86,3 +86,7 @@ Create a cloudbuild trigger
 ```
 gcloud beta builds triggers create github --repo-name=express_echo_hjs  --repo-owner=chrisguest75 --branch-pattern=".*" --build-config=cloudbuild.yaml --project open-source-01
 ```
+
+```
+gcloud builds submit --project open-source-01 --substitutions=COMMIT_SHA=test,REPO_NAME=express_echo_hjs,_IMAGE_NAME=express_echo_hjs,BRANCH_NAME=master
+```
