@@ -13,12 +13,15 @@ steps:
   - |
     pwd
     ls -la
-    docker build --target prod --cache-from=gcr.io/$PROJECT_ID/$REPO_NAME/${_IMAGE_NAME}_${BRANCH_NAME}:${COMMIT_SHA} -t gcr.io/$PROJECT_ID/$REPO_NAME/${_IMAGE_NAME}_${BRANCH_NAME}:${COMMIT_SHA} .
-    docker build --target test --cache-from=gcr.io/$PROJECT_ID/$REPO_NAME/${_IMAGE_NAME}_${BRANCH_NAME}:${COMMIT_SHA}_test -t gcr.io/$PROJECT_ID/$REPO_NAME/${_IMAGE_NAME}_${BRANCH_NAME}:${COMMIT_SHA}_test .
-    docker tag gcr.io/$PROJECT_ID/$REPO_NAME/${_IMAGE_NAME}_${BRANCH_NAME}:$COMMIT_SHA gcr.io/$PROJECT_ID/$REPO_NAME/${_IMAGE_NAME}_${BRANCH_NAME}:latest
+    docker build --target integrationtest --cache-from=gcr.io/$PROJECT_ID/$REPO_NAME/${_IMAGE_NAME}_${BRANCH_NAME}_integrationtest:latest -t gcr.io/$PROJECT_ID/$REPO_NAME/${_IMAGE_NAME}_${BRANCH_NAME}_integrationtest:${COMMIT_SHA} .
+    docker tag gcr.io/$PROJECT_ID/$REPO_NAME/${_IMAGE_NAME}_${BRANCH_NAME}_integrationtest:${COMMIT_SHA} gcr.io/$PROJECT_ID/$REPO_NAME/${_IMAGE_NAME}_${BRANCH_NAME}_integrationtest:latest
+    docker build --target unittest --cache-from=gcr.io/$PROJECT_ID/$REPO_NAME/${_IMAGE_NAME}_${BRANCH_NAME}_integrationtest:${COMMIT_SHA} -t gcr.io/$PROJECT_ID/$REPO_NAME/${_IMAGE_NAME}_${BRANCH_NAME}_unittest:${COMMIT_SHA} .
+    docker build --target prod --cache-from=gcr.io/$PROJECT_ID/$REPO_NAME/${_IMAGE_NAME}_${BRANCH_NAME}_integrationtest:${COMMIT_SHA} -t gcr.io/$PROJECT_ID/$REPO_NAME/${_IMAGE_NAME}_${BRANCH_NAME}:${COMMIT_SHA} .
+    docker tag gcr.io/$PROJECT_ID/$REPO_NAME/${_IMAGE_NAME}_${BRANCH_NAME}:${COMMIT_SHA} gcr.io/$PROJECT_ID/$REPO_NAME/${_IMAGE_NAME}_${BRANCH_NAME}:latest
+
     docker push gcr.io/$PROJECT_ID/$REPO_NAME/${_IMAGE_NAME}_${BRANCH_NAME}:${COMMIT_SHA} 
     docker push gcr.io/$PROJECT_ID/$REPO_NAME/${_IMAGE_NAME}_${BRANCH_NAME}:latest
-    docker run --rm gcr.io/$PROJECT_ID/$REPO_NAME/${_IMAGE_NAME}_${BRANCH_NAME}:${COMMIT_SHA}_test
+    docker push gcr.io/$PROJECT_ID/$REPO_NAME/${_IMAGE_NAME}_${BRANCH_NAME}_integrationtest:latest
 
 - name: 'gcr.io/cloud-builders/docker'
   entrypoint: /bin/bash
@@ -27,6 +30,8 @@ steps:
   - |
     pwd
     ls -la
+    docker run --rm gcr.io/$PROJECT_ID/$REPO_NAME/${_IMAGE_NAME}_${BRANCH_NAME}_unittest:${COMMIT_SHA} 
+    docker run --rm gcr.io/$PROJECT_ID/$REPO_NAME/${_IMAGE_NAME}_${BRANCH_NAME}_integrationtest:${COMMIT_SHA} 
 
 - name: 'gcr.io/cloud-builders/gcloud'
   entrypoint: /bin/bash
@@ -37,4 +42,5 @@ steps:
 
 # These are images that pushed as well
 images: ['gcr.io/$PROJECT_ID/$REPO_NAME/${_IMAGE_NAME}_${BRANCH_NAME}:${COMMIT_SHA}',
-        'gcr.io/$PROJECT_ID/$REPO_NAME/${_IMAGE_NAME}_${BRANCH_NAME}:latest']
+        'gcr.io/$PROJECT_ID/$REPO_NAME/${_IMAGE_NAME}_${BRANCH_NAME}:latest',
+        'gcr.io/$PROJECT_ID/$REPO_NAME/${_IMAGE_NAME}_${BRANCH_NAME}_integrationtest:latest']
