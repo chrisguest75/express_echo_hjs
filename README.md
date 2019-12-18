@@ -3,6 +3,7 @@
 ## TODO
 A list of TODOs
 - Add some unittests
+- Add codecoverage ability.
 - Fix HTML
 - Improve the design
 - Add an OOM endpoint
@@ -19,7 +20,9 @@ nodemon
 
 ## Tests 
 
-
+```
+mocha tests
+```
 
 
 ## VSCode
@@ -47,10 +50,17 @@ Some tasks have been added for vscode.
 
 # Docker
 Building a local container and running locally for testing.  
-
+Run server in docker
 ```
-docker build -t express-echo .
+docker build --target prod -t express-echo .
 docker run -p 3000:3000 -it --rm express-echo
+open http://localhost:3000
+```
+
+Run tests in docker
+```
+docker build --target test -t express-echo-test .
+docker run -it --rm express-echo-test
 open http://localhost:3000
 ```
 
@@ -75,4 +85,8 @@ kubectl get pods --all-namespaces
 Create a cloudbuild trigger 
 ```
 gcloud beta builds triggers create github --repo-name=express_echo_hjs  --repo-owner=chrisguest75 --branch-pattern=".*" --build-config=cloudbuild.yaml --project open-source-01
+```
+
+```
+gcloud builds submit --project open-source-01 --substitutions=COMMIT_SHA=test,REPO_NAME=express_echo_hjs,_IMAGE_NAME=express_echo_hjs,BRANCH_NAME=master
 ```
