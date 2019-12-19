@@ -1,4 +1,10 @@
-#!/usr/bin/env /bin/bash
+#!/usr/bin/env bash
+echo "Start"
+echo $(pwd)
+echo $(which cgget)
+export MAX_MEMORY=$(cgget -n --values-only --variable memory.limit_in_bytes /)
+echo "MAX_MEMORY=${MAX_MEMORY}"
+
 pushd /app
 echo "Run app in the background"
 npm start &
