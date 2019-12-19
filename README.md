@@ -72,14 +72,12 @@ Run unittests in docker
 ```
 docker build --target unittest -t express-echo-unittest .
 docker run -it --rm express-echo-unittest
-open http://localhost:3000
 ```
 
 Run integrationtests in docker
 ```
 docker build --target integrationtest -t express-echo-integrationtest .
 docker run -it --rm express-echo-integrationtest
-open http://localhost:3000
 ```
 
 # Deploy to Kind with Cloud Code
