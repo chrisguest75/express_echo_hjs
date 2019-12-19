@@ -20,10 +20,21 @@ nodemon
 
 ## Tests 
 
+Running the unittests
 ```
 mocha tests
 ```
 
+Running the integration tests
+```
+nodemon
+$(npm bin)/cypress run
+```
+
+Run in interactive mode.
+```
+$(npm bin)/cypress open
+```
 
 ## VSCode
 ### Debug
@@ -57,10 +68,17 @@ docker run -p 3000:3000 -it --rm express-echo
 open http://localhost:3000
 ```
 
-Run tests in docker
+Run unittests in docker
 ```
-docker build --target test -t express-echo-test .
-docker run -it --rm express-echo-test
+docker build --target unittest -t express-echo-unittest .
+docker run -it --rm express-echo-unittest
+open http://localhost:3000
+```
+
+Run integrationtests in docker
+```
+docker build --target integrationtest -t express-echo-integrationtest .
+docker run -it --rm express-echo-integrationtest
 open http://localhost:3000
 ```
 
