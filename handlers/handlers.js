@@ -48,6 +48,14 @@ function process_req(req) {
     request_values.push({ request_key:"env." + key, request_value:process.env[key]});
   });
 
+  Object.keys(process.versions).forEach(function(key) {
+    request_values.push({ request_key:"versions." + key, request_value:process.versions[key]});
+  });
+
+  Object.keys(os.userInfo()).forEach(function(key) {
+    request_values.push({ request_key:"userInfo." + key, request_value:os.userInfo()[key]});
+  });
+  
   return request_values;
 }
 

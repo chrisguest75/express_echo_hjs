@@ -41,3 +41,9 @@ app.use(function(err, req, res, next) {
 });
 
 module.exports = app;
+
+async function closeGracefully(signal) {
+  logger.info("SIGINT handled");
+  process.exit()
+}
+process.on('SIGINT', closeGracefully)

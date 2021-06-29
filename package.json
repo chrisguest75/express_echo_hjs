@@ -7,7 +7,7 @@
     "debug": "nodemon --inspect ./bin/www",
     "coverage": "nyc mocha --timeout=3000",
     "test": "mocha ./tests",
-    "testjunit": "./node_modules/.bin/mocha ./tests --reporter mocha-junit-reporter"    
+    "testjunit": "./node_modules/.bin/mocha ./tests --reporter mocha-junit-reporter"
   },
   "dependencies": {
     "cookie-parser": "~1.4.4",
